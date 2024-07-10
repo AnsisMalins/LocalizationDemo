@@ -1,0 +1,9 @@
+/*.csproj
+/*.sln
+/.vs/
+/Assets/StreamingAssets/**/*.meta
+/Library/
+/Logs/
+/obj/
+/Temp/
+/UserSettings/
