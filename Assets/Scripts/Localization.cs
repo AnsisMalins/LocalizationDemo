@@ -40,6 +40,9 @@ public static class Localization
     {
         lock (_data)
         {
+            if (Thread.VolatileRead(ref _isLoaded) != 0)
+                return;
+
             _data.Clear();
 
             try
