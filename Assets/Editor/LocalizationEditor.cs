@@ -104,7 +104,7 @@ public static class LocalizationEditor
         _editorData.Language = language;
         Localization.SetLanguage(language, true);
 
-        foreach (var editor in Resources.FindObjectsOfTypeAll<MonoBehaviourEditor>())
+        foreach (var editor in Resources.FindObjectsOfTypeAll<Editor>())
             editor.Repaint();
     }
 
@@ -126,7 +126,7 @@ public static class LocalizationEditor
     }
 
     [MenuItem("Tools/Localization/Debug/Select Editor Data Object")]
-    private static void SelectEditorDataObject()
+    private static void SelectUndoTarget()
     {
         Selection.activeObject = _editorData;
     }

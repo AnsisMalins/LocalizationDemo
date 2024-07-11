@@ -8,7 +8,7 @@ using UnityEngine;
 
 public static class Localization
 {
-    private static Dictionary<LocalizationKey, string> _data = new();
+    private static readonly Dictionary<LocalizationKey, string> _data = new();
     private static int _isLoaded;
     public static event Action LanguageChanged;
 
@@ -123,8 +123,9 @@ public struct LocalizationKey : IEquatable<LocalizationKey>, IComparable<Localiz
     public long ObjectID;
     public string PropertyName;
 
+    public override bool Equals(object obj) => throw new NotSupportedException();
     public override int GetHashCode() => (ObjectID, PropertyName).GetHashCode();
-    public override string ToString() => $"({ObjectID}, \"{PropertyName}\")";
+    public override string ToString() => $"({ObjectID}, {PropertyName})";
 
     public LocalizationKey(long objectId, string propertyName)
     {

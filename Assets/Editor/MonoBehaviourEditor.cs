@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [CustomEditor(typeof(MonoBehaviour), true, isFallback = true), CanEditMultipleObjects]
 public class MonoBehaviourEditor : Editor
@@ -38,13 +40,13 @@ public class MonoBehaviourEditor : Editor
 
         foreach (var property in targetType
             .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-            .Where(i => i.GetCustomAttribute<LocalizedAttribute>() != null))
+            .Where(i => Attribute.IsDefined(i, typeof(LocalizedAttribute))))
         {
             if (objectId == 0L)
             {
                 var objectIdField = targetType
                     .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(i => i.GetCustomAttribute<ObjectIDAttribute>() != null)
+                    .Where(i => Attribute.IsDefined(i, typeof(ObjectIDAttribute)))
                     .FirstOrDefault();
 
                 if (objectIdField != null)
