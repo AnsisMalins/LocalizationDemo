@@ -126,7 +126,7 @@ public static class LocalizationEditor
     }
 
     [MenuItem("Tools/Localization/Debug/Select Editor Data Object")]
-    private static void SelectUndoTarget()
+    private static void SelectEditorDataObject()
     {
         Selection.activeObject = _editorData;
     }
