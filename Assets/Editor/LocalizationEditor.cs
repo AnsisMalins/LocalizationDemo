@@ -135,14 +135,15 @@ public static class LocalizationEditor
     {
         public string Language;
         [SerializeField]
-        private List<Item> _data = new();
+        private List<LocalizationKey> _keys = new();
+        [SerializeField]
+        private List<string> _values = new();
 
-        public void Clear() => _data.Clear();
-        public bool ContainsKey(LocalizationKey key) => _data.BinarySearch(new(key)) >= 0;
-        public int Count => _data.Count;
+        public bool ContainsKey(LocalizationKey key) => _keys.BinarySearch(key) >= 0;
+        public int Count => _keys.Count;
         IEnumerator IEnumerable.GetEnumerator() => throw new NotSupportedException();
-        public IEnumerable<LocalizationKey> Keys => _data.Select(i => i.key);
-        public IEnumerable<string> Values => _data.Select(i => i.value);
+        public IEnumerable<LocalizationKey> Keys => _keys;
+        public IEnumerable<string> Values => _values;
 
         public EditorData()
         {
@@ -162,6 +163,18 @@ public static class LocalizationEditor
                 SetLanguage(Language);
         }
 
+        public void Clear()
+        {
+            _keys.Clear();
+            _values.Clear();
+        }
+
+        public IEnumerator<KeyValuePair<LocalizationKey, string>> GetEnumerator()
+        {
+            for (int i = 0; i < _keys.Count; i++)
+                yield return new(_keys[i], _values[i]);
+        }
+
         public string this[LocalizationKey key]
         {
             get
@@ -172,31 +185,27 @@ public static class LocalizationEditor
             }
             set
             {
-                int index = _data.BinarySearch(new(key));
-                var item = new Item(key, value);
+                int index = _keys.BinarySearch(key);
                 if (index >= 0)
-                    _data[index] = item;
+                {
+                    _values[index] = value;
+                }
                 else
-                    _data.Insert(~index, item);
-            }
-        }
-
-        public IEnumerator<KeyValuePair<LocalizationKey, string>> GetEnumerator()
-        {
-            for (int i = 0; i < _data.Count; i++)
-            {
-                var item = _data[i];
-                yield return new(item.key, item.value);
+                {
+                    index = ~index;
+                    _keys.Insert(index, key);
+                    _values.Insert(index, value);
+                }
             }
         }
 
         public bool TryGetValue(LocalizationKey key, out string value)
         {
-            int index = _data.BinarySearch(new(key));
+            int index = _keys.BinarySearch(key);
 
             if (index >= 0)
             {
-                value = _data[index].value;
+                value = _values[index];
                 return true;
             }
             else
@@ -204,30 +213,6 @@ public static class LocalizationEditor
                 value = null;
                 return false;
             }
-        }
-    }
-
-    [Serializable]
-    private struct Item : IComparable<Item>
-    {
-        public LocalizationKey key;
-        public string value;
-
-        public Item(LocalizationKey key)
-        {
-            this.key = key;
-            value = null;
-        }
-
-        public Item(LocalizationKey key, string value)
-        {
-            this.key = key;
-            this.value = value;
-        }
-
-        public int CompareTo(Item other)
-        {
-            return key.CompareTo(other.key);
         }
     }
 }
